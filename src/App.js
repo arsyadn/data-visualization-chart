@@ -1,24 +1,46 @@
 import logo from './logo.svg';
 import './App.css';
+import {Bar, Pie, Line  } from 'react-chartjs-2';
+import { Chart } from "chart.js/auto";
+import {useState, useEffect} from 'react';
 
 function App() {
+
+  const [dataCar, setDataCar] = useState([]);
+
+  const getDataCar = async () => {
+    const data = await fetch('https://rent-cars-api.herokuapp.com/admin/car');
+    const result = await data.json();
+    setDataCar(result);
+    console.log(data);
+  }
+
+  useEffect(() =>{
+    getDataCar();
+  },[]);
+
+  const dataChart = {
+    labels:["January","February","March"],
+    datasets: [
+    {
+      label:"Terjual",
+      backgroundColor:"#92B4EC",
+      data: dataCar.map((item) => item.price)
+    },
+    {
+      label:"Tidak Terjual",
+      data: [3, 5, 61],
+      backgroundColor: "#5F7161"
+    }
+  ]
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <>
+    <div>
+    <Bar data={dataChart}/>
     </div>
+    </>
   );
 }
 
